@@ -1,6 +1,8 @@
 "use strict";
 console.clear();
 
+//var primer=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,''];
+
 function newGame() {
   var size = 4;
 
@@ -19,7 +21,7 @@ function newGame() {
     constructor(x, y, content, container) {
       this._block = document.createElement("div");
       this._block.classList.add("block");
-      this._block.innerText = content; //arr.shift();
+      this._block.innerText = content;
       container.appendChild(this._block);
 
       this._block.plitka = this;
@@ -58,10 +60,10 @@ function newGame() {
 
   // счетчик количества ходов
   var z = 0;
-  var stepCounter = () => {
-    z = z + 1;
+  function stepCounter() {
+    z++;
     document.querySelector(".number").innerText = z;
-  };
+  }
 
   // переназначение содержимого ячеек
   table.addEventListener("click", function(event) {
@@ -93,64 +95,163 @@ function newGame() {
     plitka.x = tempLeft;
     plitka.y = tempTop;
 
-    //console.log("tx-ex " + Math.abs(tx - ex) + ", ty-ey " + Math.abs(ty - ey));
-
     stepCounter();
   }
 
   window.addEventListener("keydown", function(event) {
-    var plitkaToMove;
+    var shiftByKeyCodeArgs = {
+      37: [-1, +0],
+      38: [+0, -1],
+      39: [+1, +0],
+      40: [+0, +1]
+    };
 
-    if (event.keyCode == 37) {
-      plitkaToMove = playbox.find(
-        plitka => plitka.x === emptyPlitka.x - 1 && plitka.y === emptyPlitka.y
-      );
-      console.log("left");
-    }
-    if (event.keyCode == 38) {
-      plitkaToMove = playbox.find(
-        plitka => plitka.x === emptyPlitka.x && plitka.y === emptyPlitka.y - 1
-      );
-      console.log("up");
-    }
-    if (event.keyCode == 39) {
-      plitkaToMove = playbox.find(
-        plitka => plitka.x === emptyPlitka.x + 1 && plitka.y === emptyPlitka.y
-      );
-      console.log("right");
-    }
-    if (event.keyCode == 40) {
-      plitkaToMove = playbox.find(
-        plitka => plitka.x === emptyPlitka.x && plitka.y === emptyPlitka.y + 1
-      );
-      console.log("down");
-    }
+    var args = shiftByKeyCodeArgs[event.keyCode];
+    shiftPlitkaBy(...args);
+  });
 
+  function shiftPlitkaBy(x = 0, y = 0) {
+    let plitkaToMove = playbox.find(
+      plitka => plitka.x === emptyPlitka.x + x && plitka.y === emptyPlitka.y + y
+    );
     if (plitkaToMove !== undefined) {
       movePlitka(plitkaToMove);
     }
-  });
+    console.log("shift");
+  }
+
+  function getRandomDirection() {
+    var directionArgs = [[-1, +0], [+0, -1], [+1, +0], [+0, +1]];
+
+    var randomArgIndex = Math.floor(Math.random() * directionArgs.length);
+    return directionArgs[randomArgIndex];
+  }
+
+  function mix() {
+    var mewanieCount = 5;
+    new Array(mewanieCount)
+      .fill(0)
+      .map(getRandomDirection)
+      .forEach(args => shiftPlitkaBy(...args));
+    console.log("mix");
+  }
+
+  mix();
+  
+  // playbox.every( function match(plitka, index){
+  //  if (plitka.text  === index && playbox[playbox.length - 1]=== '') {
+  //    document.querySelector(".showtext").classList.add('win')
+  //  }
+  // });
+  
+  // playbox.toString() == arr.toString()? document.querySelector(".showtext").classList.add('win'): console.log('go');
+          
+                
+}
+//просто украл секундомер :)
+var base = 60;
+var clocktimer, dateObj, dh, dm, ds, ms;
+var readout = "";
+var h = 1,
+    m = 1,
+    tm = 1,
+    s = 0,
+    ts = 0,
+    ms = 0,
+    init = 0;
+//функция для очистки поля
+function ClearСlock() {
+  clearTimeout(clocktimer);
+  h = 1;
+  m = 1;
+  tm = 1;
+  s = 0;
+  ts = 0;
+  ms = 0;
+  init = 0;
+  readout = "00:00:00.00";
+  document.MyForm.stopwatch.value = readout;
+}
+//функция для старта секундомера
+function StartTIME() {
+  var cdateObj = new Date();
+  var t = cdateObj.getTime() - dateObj.getTime() - s * 1000;
+  if (t > 999) {
+    s++;
+  }
+  if (s >= m * base) {
+    ts = 0;
+    m++;
+  } else {
+    ts = parseInt(ms / 100 + s);
+    if (ts >= base) {
+      ts = ts - (m - 1) * base;
+    }
+  }
+  if (m > h * base) {
+    tm = 1;
+    h++;
+  } else {
+    tm = parseInt(ms / 100 + m);
+    if (tm >= base) {
+      tm = tm - (h - 1) * base;
+    }
+  }
+  ms = Math.round(t / 10);
+  if (ms > 99) {
+    ms = 0;
+  }
+  if (ms == 0) {
+    ms = "00";
+  }
+  if (ms > 0 && ms <= 9) {
+    ms = "0" + ms;
+  }
+  if (ts > 0) {
+    ds = ts;
+    if (ts < 10) {
+      ds = "0" + ts;
+    }
+  } else {
+    ds = "00";
+  }
+  dm = tm - 1;
+  if (dm > 0) {
+    if (dm < 10) {
+      dm = "0" + dm;
+    }
+  } else {
+    dm = "00";
+  }
+  dh = h - 1;
+  if (dh > 0) {
+    if (dh < 10) {
+      dh = "0" + dh;
+    }
+  } else {
+    dh = "00";
+  }
+  readout = dh + ":" + dm + ":" + ds + "." + ms;
+  document.MyForm.stopwatch.value = readout;
+  clocktimer = setTimeout("StartTIME()", 1);
+}
+//Функция запуска и остановки
+function StartStop() {
+  if (init == 0) {
+    ClearСlock();
+    dateObj = new Date();
+    StartTIME();
+    init = 1;
+  } else {
+    clearTimeout(clocktimer);
+    init = 0;
+  }
 }
 
 document.querySelector(".but").addEventListener("click", function(event) {
   document.querySelector("#box").classList.remove("bg");
-  document.querySelector(".number").textContent = "0";
-
+  StartStop();
   newGame();
+
+  document.querySelector(".number").textContent = "000";
 });
-//здесь будем получать значение кейкода для перемешивания
-function randomKeyCode() {
-  var rand = 37 + Math.random() * 4;
-  rand = Math.floor(rand);
-  return rand;
-}
-function mix() {
-  $("button").on("click", function() {
-    //допустим, хочу вверх нажать
-    var e = $.Event("keydown", { keyCode: 38 });
-    // а на .table ли вешать? если на бади - то, по идее, экран скроллить попытается
-    $(".table").trigger(e);
-    console.log("click");
-  });
-}
-mix();

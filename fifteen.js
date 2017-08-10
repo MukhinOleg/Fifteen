@@ -128,7 +128,7 @@ function newGame() {
   }
 
   function mix() {
-    var mewanieCount = 5;
+    var mewanieCount = 100;
     new Array(mewanieCount)
       .fill(0)
       .map(getRandomDirection)
